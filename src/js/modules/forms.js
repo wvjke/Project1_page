@@ -1,15 +1,14 @@
+import checkNumInputs from './checkNumInputs';
 
-const forms = () => {
+"use strict";
+
+const forms = (state) => {
 
     const form = document.querySelectorAll('form'),
-          input = document.querySelectorAll('input'),
-          phoneInputs = document.querySelectorAll('input[name="user_phone"');
+          input = document.querySelectorAll('input');
 
-    phoneInputs.forEach(item => {
-        item.addEventListener('input', () => {
-            item.value = item.value.replace(/\D/, '');
-        });
-    });
+
+    checkNumInputs('input[name="user_phone');
 
     const message = {
         loading: 'Загрузка',
@@ -28,7 +27,7 @@ const forms = () => {
     };
 
     const clearInputs = () => {
-        inputs.forEach(item => {
+        input.forEach(item => {
             item.value = '';
         });
     }
@@ -40,8 +39,12 @@ const forms = () => {
             let statusMessage = document.createElement('div');
             statusMessage.classList.add('status');
             item.appendChild(statusMessage);
-
             const formData = new FormData(item);
+            if (item.getAttribute('data-calc') === 'end') {
+                for (let key in state) {
+                    formData.append(key, state[key]);
+                }
+            }
 
             postData('assets/server.php', formData)
                 .then(res => {
@@ -52,10 +55,20 @@ const forms = () => {
                     statusMessage.textContent = message.failure;
                 })
                 .finally(() => {
-                    clearInputs();
+                    for (let key in state) {
+                        delete state[key];
+                    }
                     setTimeout(() => {
                         statusMessage.remove();
-                    }, 5000);
+                    }, 3000);
+                    setTimeout(() => {
+                       const windows = document.querySelectorAll('[data-modal]');
+                       windows.forEach(item => {
+                       item.style.display = "none";
+                    });
+                    document.body.style.overflow = "";
+                    clearInputs();
+                    }, 3000);
                 });
 
         });

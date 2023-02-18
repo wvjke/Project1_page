@@ -1,4 +1,6 @@
-const tabs = (headerSelector, tabSelector, contentSelector, activeClass) => {
+"use strict";
+
+const tabs = (headerSelector, tabSelector, contentSelector, activeClass, display = "block") => {
 
     const header = document.querySelector(headerSelector),
           tab = document.querySelectorAll(tabSelector),
@@ -7,6 +9,7 @@ const tabs = (headerSelector, tabSelector, contentSelector, activeClass) => {
     function hideTabConent() {
         content.forEach(item => {
             item.style.display = "none";
+            item.classList.remove('faded');
         });
 
         tab.forEach(item => {
@@ -15,7 +18,8 @@ const tabs = (headerSelector, tabSelector, contentSelector, activeClass) => {
     }
 
     function showTabConent(i = 0) {
-        content[i].style.display = "block";
+        content[i].style.display = display;
+        content[i].classList.add('faded');
         tab[i].classList.add(activeClass);
     }
 
